@@ -31,21 +31,23 @@ class PlaySoundsViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
         configureUI(.notPlaying)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        slowButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        fastButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        highPitchButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        lowPitchButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        echoButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        reverbButton.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+    
         setupAudio()
 
         // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     @IBAction func playSoundForButton(_ sender: UIButton){
         switch (ButtonType(rawValue: sender.tag)! )

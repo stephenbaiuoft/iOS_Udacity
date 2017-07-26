@@ -17,13 +17,14 @@ import AVFoundation
  it means that audioRecorder instance will perform audioRecorderDidFinishRecording (as defined by us) to do the job
  */
 
-class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
+class RecordSoundsViewController: UIViewController {
   
     
     @IBOutlet weak var recordLabel: UILabel!
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var stopRecordingButton: UIButton!
     var audioRecorder: AVAudioRecorder!
+    var alert: UIAlertController! = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,11 +39,10 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         // Dispose of any resources that can be recreated.
     }
 
+
     
     @IBAction func recordAudio(_ sender: UIButton) {
-        recordLabel.text = "Recording in Progress"
-        stopRecordingButton.isEnabled = true
-        recordButton.isEnabled = false
+        setUIState(state: true, msg: "Recording in Progress")
     
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
         let recordingName = "recordedVoice.wav"
@@ -66,22 +66,21 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     }
     
     @IBAction func stopRecordingAudio(_ sender: UIButton) {
-        stopRecordingButton.isEnabled = false
-        recordButton.isEnabled = true
-        recordLabel.text = "Tap to Record"
+        setUIState(state: false, msg: "Tap to Record")
         
         audioRecorder.stop()
         let audioSession = AVAudioSession.sharedInstance()
         try! audioSession.setActive(false)
     }
-
-    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully: Bool) {
-        if(successfully){
-            performSegue(withIdentifier: "stopRecording", sender: audioRecorder.url)
-        }else{
-            print("Recording Was Not Successful")
-        }
+    
+    // toggles the stopRecordingButton state
+    func setUIState( state:Bool, msg:String){
+        stopRecordingButton.isEnabled = state
+        recordButton.isEnabled = !state
+        recordLabel.text = msg
+    
     }
+
     
     // this function prepares RecordSoundsViewController to segue to other view controllers based on input to performSegue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -93,4 +92,21 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     }
     
 }
+
+// extension areas!
+extension RecordSoundsViewController:AVAudioRecorderDelegate{
+    
+    func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully: Bool) {
+        if(successfully){
+            performSegue(withIdentifier: "stopRecording", sender: audioRecorder.url)
+        }else{
+            alert = UIAlertController.init(title: "Audio Alert", message: "Recording Was Not Successful", preferredStyle: UIAlertControllerStyle.alert)
+            present(alert, animated: true, completion: {
+                print("Audio Alert Done here")
+            })
+            
+        }
+    }
+}
+
 
