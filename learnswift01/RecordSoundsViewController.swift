@@ -19,6 +19,7 @@ import AVFoundation
 
 class RecordSoundsViewController: UIViewController {
   
+    let screenSize: CGRect = UIScreen.main.bounds
     
     @IBOutlet weak var recordLabel: UILabel!
     @IBOutlet weak var recordButton: UIButton!
@@ -89,6 +90,12 @@ class RecordSoundsViewController: UIViewController {
             let recordedAudioURL = sender as! URL
             playSoundsVC.recordedAudioURL = recordedAudioURL
         }
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        print("will transition")
+        
+        
     }
     
 }
